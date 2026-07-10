@@ -60,6 +60,9 @@
   "ModeToggle": {
     "switchMode": "Switch to {mode} mode"
   },
+  "LocaleToggle": {
+    "switchTo": "Switch to {locale}"
+  },
   "Dashboard": {
     "page": {
       "title": "Dashboard",
@@ -834,6 +837,7 @@
         "wait": "Wait",
         "condition": "Condition (If/Else)",
         "send_webhook": "Send Webhook",
+        "send_conversion_event": "Send Conversion Event",
         "close_conversation": "Close Conversation"
       },
       "triggers": {
@@ -971,7 +975,12 @@
         "matchType": "Match type",
         "matchContains": "Contains",
         "matchExact": "Exact",
-        "closeConversationHint": "Sets the conversation status to \"closed\". No configuration needed."
+        "closeConversationHint": "Sets the conversation status to \"closed\". No configuration needed.",
+        "metaEventNameLabel": "Meta event name",
+        "placeholderMetaEventName": "e.g. Lead, Purchase, Contact, or a custom name",
+        "valueOptionalLabel": "Value (optional)",
+        "currencyOptionalLabel": "Currency (optional)",
+        "sendConversionEventHint": "Sends an event to Meta Conversions API using the token configured in Settings → Conversions. Google Ads can't be fired from an automation (it requires an agent's browser)."
       }
     }
   },
@@ -1503,7 +1512,8 @@
       "fields": "Fields & tags",
       "deals": "Deals & currency",
       "members": "Team members",
-      "api": "API keys"
+      "api": "API keys",
+      "conversions": "Conversions"
     },
     "groups": {
       "account": "Account",
@@ -1691,6 +1701,43 @@
       "reindex": "Reindex",
       "reindexTooltip": "Re-embed all documents (e.g. after adding an embeddings key)",
       "loading": "Loading…"
+    },
+    "conversions": {
+      "title": "Conversions",
+      "description": "Connect Meta Conversions API and Google Ads to measure which CRM contacts, deals, and replies originate from your ad campaigns.",
+      "metaSectionTitle": "Meta Conversions API",
+      "metaSectionDesc": "Sends conversion events straight to Meta from the server using a long-lived access token. More reliable than the browser pixel — works even with ad blockers.",
+      "metaPixelId": "Pixel ID",
+      "metaPixelIdPlaceholder": "e.g. 123456789012345",
+      "metaAccessToken": "Access token",
+      "metaAccessTokenPlaceholder": "Enter your Meta access token",
+      "metaTokenHidden": "Token is hidden for security. Re-enter it to update configuration.",
+      "metaTestEventCode": "Test event code",
+      "metaTestEventCodeOptional": "(optional)",
+      "metaTestEventCodeHint": "From Meta Events Manager → Test Events. Events show up there live without touching your real attribution data.",
+      "metaEventsTitle": "Events that fire a conversion",
+      "trackLeadCreated": "New contact created",
+      "trackDealWon": "Deal marked as won",
+      "trackFirstReply": "First reply to an inbound message",
+      "trackAutomations": "Available as an Automations step",
+      "googleSectionTitle": "Google Ads",
+      "googleSectionDesc": "Simple gtag-style tracking — no OAuth. Only fires for events that happen in an agent's browser (manually adding a contact, marking a deal won, sending a reply). Can't fire for contacts auto-created by the WhatsApp webhook with no human involved.",
+      "googleConversionId": "Conversion ID",
+      "googleConversionIdPlaceholder": "e.g. AW-123456789",
+      "googleLeadLabel": "Label — new contact",
+      "googleDealWonLabel": "Label — deal won",
+      "googleFirstReplyLabel": "Label — first reply",
+      "googleLabelPlaceholder": "Conversion label",
+      "testConnection": "Test connection",
+      "testing": "Testing...",
+      "testSuccess": "Meta connection verified successfully.",
+      "testFailed": "Could not verify the Meta connection.",
+      "save": "Save",
+      "saving": "Saving...",
+      "saveSuccess": "Conversion tracking settings saved",
+      "saveFailed": "Failed to save settings",
+      "loadFailed": "Failed to load conversion tracking settings",
+      "adminOnlyHint": "Only admins and owners can change this configuration."
     }
   }
 }

@@ -454,6 +454,7 @@ export type AutomationStepType =
   | 'wait'
   | 'condition'
   | 'send_webhook'
+  | 'send_conversion_event'
   | 'close_conversation';
 
 export type AutomationLogStatus = 'success' | 'partial' | 'failed';
@@ -559,6 +560,19 @@ export interface SendWebhookStepConfig {
   body_template?: string;
 }
 
+/**
+ * Meta-only — Google Ads has no server-side path without OAuth (see
+ * src/lib/conversions/), so this step can't fire a gtag conversion;
+ * it sends a Meta CAPI event using the account's Settings → Conversions
+ * token. `meta_event_name` is free text (Meta's standard vocabulary
+ * like "Lead" / "Purchase", or a custom event name).
+ */
+export interface SendConversionEventStepConfig {
+  meta_event_name: string;
+  value?: number;
+  currency?: string;
+}
+
 export type AutomationStepConfig =
   | SendMessageStepConfig
   | SendButtonsStepConfig
@@ -571,6 +585,7 @@ export type AutomationStepConfig =
   | WaitStepConfig
   | ConditionStepConfig
   | SendWebhookStepConfig
+  | SendConversionEventStepConfig
   | Record<string, never>
   | Record<string, unknown>;
 

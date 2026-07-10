@@ -51,6 +51,7 @@ import { TemplatePicker } from "./template-picker";
 import { AiThreadBanner } from "./ai-thread-banner";
 import { buildReplyPreview } from "./reply-quote";
 import { toast } from "sonner";
+import { fireGoogleAdsConversion } from "@/lib/conversions/gtag";
 
 interface ReplyDraft {
   id: string;
@@ -492,6 +493,9 @@ export function MessageThread({
         // with the real DB row. If realtime hasn't arrived yet, at least
         // flip status to 'sent' so the UI stops showing "sending".
         onUpdateMessage(tempId, { status: "sent" });
+        if (payload.conversion) {
+          void fireGoogleAdsConversion(payload.conversion.conversionId, payload.conversion.label);
+        }
       } catch (err) {
         console.error("Failed to send message:", err);
         const reason = err instanceof Error ? err.message : "network error";
@@ -557,6 +561,9 @@ export function MessageThread({
         }
 
         onUpdateMessage(tempId, { status: "sent" });
+        if (data.conversion) {
+          void fireGoogleAdsConversion(data.conversion.conversionId, data.conversion.label);
+        }
       } catch (err) {
         console.error("Failed to send media:", err);
         const reason = err instanceof Error ? err.message : "network error";
@@ -611,6 +618,9 @@ export function MessageThread({
         }
 
         onUpdateMessage(tempId, { status: "sent" });
+        if (data.conversion) {
+          void fireGoogleAdsConversion(data.conversion.conversionId, data.conversion.label);
+        }
       } catch (err) {
         console.error("Failed to send interactive message:", err);
         const reason = err instanceof Error ? err.message : "network error";
@@ -700,6 +710,9 @@ export function MessageThread({
         }
 
         onUpdateMessage(tempId, { status: "sent" });
+        if (payload.conversion) {
+          void fireGoogleAdsConversion(payload.conversion.conversionId, payload.conversion.label);
+        }
       } catch (err) {
         console.error("Failed to send template:", err);
         const reason = err instanceof Error ? err.message : "network error";

@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { trackConversion } from '@/lib/conversions/track-client';
 
 interface ContactFormProps {
   open: boolean;
@@ -175,6 +176,7 @@ export function ContactForm({
           .single();
         if (error) throw error;
         contactId = data.id;
+        trackConversion('lead_created', { phone: phone.trim(), email: email.trim() || undefined });
       }
 
       // Sync tags

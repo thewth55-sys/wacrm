@@ -42,7 +42,10 @@ const SECURITY_HEADERS = [
       // Next.js needs 'unsafe-inline' for its inline hydration script
       // and 'unsafe-eval' in dev + some production optimisations.
       // Nonce-based CSP is a later project.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // googletagmanager.com is gtag.js — lazy-loaded only when an
+      // account configures Google Ads conversion tracking (see
+      // src/lib/conversions/gtag.ts), never loaded unconditionally.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
       // Tailwind + inline style attributes on lots of components.
       "style-src 'self' 'unsafe-inline'",
       // Supabase public-bucket avatars, contact avatars (arbitrary
@@ -55,7 +58,10 @@ const SECURITY_HEADERS = [
       "font-src 'self' data:",
       // Supabase REST + realtime (WSS). All Meta API calls happen
       // server-side, so graph.facebook.com does not belong here.
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      // googletagmanager.com / google.com / doubleclick.net are the
+      // Google Ads gtag conversion beacon (client-side, opt-in per
+      // account — see src/lib/conversions/gtag.ts).
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

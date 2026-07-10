@@ -36,6 +36,7 @@ import {
 } from '@/lib/whatsapp/interactive';
 import { decrypt, encrypt, isLegacyFormat } from '@/lib/whatsapp/encryption';
 import { supabaseAdmin } from '@/lib/flows/admin-client';
+import { dispatchConversionEvent, getGoogleAdsConversionParams } from '@/lib/conversions/dispatch';
 import {
   sanitizePhoneForMeta,
   isValidE164,
@@ -91,6 +92,14 @@ export interface SendMessageResult {
   messageId: string;
   /** Meta's `wamid` for the delivered message. */
   whatsappMessageId: string;
+  /**
+   * Google Ads gtag params for the caller's browser to fire, present
+   * only when this send was the conversation's first agent reply and
+   * the account has Google Ads first-reply tracking configured. Meta
+   * CAPI for the same event is already dispatched server-side below —
+   * this is purely for the client-side gtag beacon.
+   */
+  conversion?: { conversionId: string; label: string } | null;
 }
 
 /**
@@ -440,6 +449,16 @@ export async function sendMessageToConversation(
       .eq('id', contact.id);
   }
 
+  // Checked before the insert below so the count excludes the message
+  // we're about to send — 0 prior agent messages means this send is
+  // the conversation's first reply, the "first_reply" conversion event.
+  const { count: priorAgentMessageCount } = await db
+    .from('messages')
+    .select('id', { count: 'exact', head: true })
+    .eq('conversation_id', conversationId)
+    .eq('sender_type', 'agent');
+  const isFirstReply = (priorAgentMessageCount ?? 0) === 0;
+
   // Persist the sent message. Field names MUST match the messages
   // schema (see 001_initial_schema.sql).
   // Interactive messages persist the body as content_text (so the
@@ -512,5 +531,14 @@ export async function sendMessageToConversation(
     );
   }
 
-  return { messageId: messageRecord.id, whatsappMessageId: waMessageId };
+  let conversion: SendMessageResult['conversion'] = null;
+  if (isFirstReply) {
+    await dispatchConversionEvent(db, accountId, 'first_reply', {
+      phone: sanitizedPhone,
+      email: contact.email ?? undefined,
+    });
+    conversion = await getGoogleAdsConversionParams(db, accountId, 'first_reply');
+  }
+
+  return { messageId: messageRecord.id, whatsappMessageId: waMessageId, conversion };
 }

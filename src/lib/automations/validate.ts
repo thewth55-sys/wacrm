@@ -143,6 +143,11 @@ function validateOne(step: StepLike, path: string, issues: ValidationIssue[]): v
         issues.push({ path: `${path}.url`, message: 'webhook URL is not a valid URL' })
       }
       break
+    case 'send_conversion_event':
+      if (!nonEmpty(c.meta_event_name)) {
+        issues.push({ path: `${path}.meta_event_name`, message: 'Meta event name is required' })
+      }
+      break
     case 'close_conversation':
       // No config required.
       break

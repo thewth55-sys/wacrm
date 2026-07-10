@@ -34,6 +34,7 @@
 import { requireApiKey } from '@/lib/auth/api-context';
 import { ok, fail, toApiErrorResponse } from '@/lib/api/v1/respond';
 import { resolveConversationByPhone } from '@/lib/whatsapp/resolve-conversation';
+import { dispatchConversionEvent } from '@/lib/conversions/dispatch';
 import {
   sendMessageToConversation,
   validateSendMessageParams,
@@ -104,6 +105,12 @@ export async function POST(request: Request) {
       to,
       typeof body.name === 'string' ? body.name : null
     );
+
+    if (resolved.contactCreated) {
+      await dispatchConversionEvent(ctx.supabase, ctx.accountId, 'lead_created', {
+        phone: to,
+      });
+    }
 
     const result = await sendMessageToConversation(
       ctx.supabase,

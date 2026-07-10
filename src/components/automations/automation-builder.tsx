@@ -33,6 +33,7 @@ import {
   ArrowUp,
   MousePointerClick,
   List,
+  Target,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -110,6 +111,7 @@ const STEP_META: Record<AutomationStepType, StepMeta> = {
   wait: { label: "wait", icon: Hourglass, border: "border-l-border" },
   condition: { label: "condition", icon: GitBranch, border: "border-l-amber-500" },
   send_webhook: { label: "send_webhook", icon: Webhook, border: "border-l-primary" },
+  send_conversion_event: { label: "send_conversion_event", icon: Target, border: "border-l-primary" },
   close_conversation: { label: "close_conversation", icon: CircleSlash, border: "border-l-primary" },
 }
 
@@ -126,6 +128,7 @@ const ADDABLE_STEPS: AutomationStepType[] = [
   "wait",
   "condition",
   "send_webhook",
+  "send_conversion_event",
   "close_conversation",
 ]
 
@@ -186,6 +189,8 @@ function blankConfig(type: AutomationStepType): Record<string, unknown> {
       return { subject: "tag_presence", operand: "", value: "" }
     case "send_webhook":
       return { url: "", headers: {}, body_template: "" }
+    case "send_conversion_event":
+      return { meta_event_name: "" }
     case "close_conversation":
       return {}
     default:
@@ -1480,6 +1485,36 @@ function StepEditor({
           </FieldBlock>
         </>
       )
+    case "send_conversion_event":
+      return (
+        <>
+          <p className="mb-2 text-xs text-muted-foreground">{t("config.sendConversionEventHint")}</p>
+          <FieldBlock label={t("config.metaEventNameLabel")}>
+            <Input
+              placeholder={t("config.placeholderMetaEventName")}
+              value={(cfg.meta_event_name as string) ?? ""}
+              onChange={(e) => set({ meta_event_name: e.target.value })}
+              className="bg-muted text-foreground"
+            />
+          </FieldBlock>
+          <FieldBlock label={t("config.valueOptionalLabel")}>
+            <Input
+              type="number"
+              value={(cfg.value as number) ?? ""}
+              onChange={(e) => set({ value: e.target.value === "" ? undefined : Number(e.target.value) })}
+              className="bg-muted text-foreground"
+            />
+          </FieldBlock>
+          <FieldBlock label={t("config.currencyOptionalLabel")}>
+            <Input
+              placeholder="USD"
+              value={(cfg.currency as string) ?? ""}
+              onChange={(e) => set({ currency: e.target.value })}
+              className="bg-muted text-foreground"
+            />
+          </FieldBlock>
+        </>
+      )
     case "close_conversation":
       return (
         <p className="text-xs text-muted-foreground">
@@ -1521,6 +1556,8 @@ function previewFor(step: BuilderStep): string {
       return `when ${step.step_config.subject ?? "?"}`
     case "send_webhook":
       return (step.step_config.url as string) || "no url"
+    case "send_conversion_event":
+      return (step.step_config.meta_event_name as string) || "no event name"
     default:
       return ""
   }

@@ -27,7 +27,7 @@ interface MetaErrorResponse {
   error?: { message?: string; code?: number; type?: string }
 }
 
-async function throwMetaError(response: Response, fallback: string): Promise<never> {
+export async function throwMetaError(response: Response, fallback: string): Promise<never> {
   let message = fallback
   try {
     const data = (await response.json()) as MetaErrorResponse

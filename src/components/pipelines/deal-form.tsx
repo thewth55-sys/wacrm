@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { trackConversion } from "@/lib/conversions/track-client";
 
 interface DealFormProps {
   open: boolean;
@@ -226,6 +227,15 @@ export function DealForm({
     toast.success(
       status === "won" ? t("toastMarkedWon") : status === "lost" ? t("toastMarkedLost") : t("toastReopened"),
     );
+    if (status === "won") {
+      const dealContact = contacts.find((c) => c.id === deal.contact_id);
+      trackConversion("deal_won", {
+        phone: dealContact?.phone,
+        email: dealContact?.email ?? undefined,
+        dealValue: deal.value,
+        dealCurrency: deal.currency,
+      });
+    }
     onOpenChange(false);
     onSaved();
   }

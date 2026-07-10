@@ -9,6 +9,7 @@ import { runAutomationsForTrigger } from '@/lib/automations/engine'
 import { dispatchInboundToFlows } from '@/lib/flows/engine'
 import { dispatchInboundToAiReply } from '@/lib/ai/auto-reply'
 import { dispatchWebhookEvent } from '@/lib/webhooks/deliver'
+import { dispatchConversionEvent } from '@/lib/conversions/dispatch'
 import {
   handleTemplateWebhookChange,
   isTemplateWebhookField,
@@ -582,6 +583,12 @@ async function processMessage(
   )
   if (!contactOutcome) return
   const contactRecord = contactOutcome.contact
+
+  if (contactOutcome.wasCreated) {
+    await dispatchConversionEvent(supabaseAdmin(), accountId, 'lead_created', {
+      phone: senderPhone,
+    })
+  }
 
   // Find or create conversation
   const convResult = await findOrCreateConversation(

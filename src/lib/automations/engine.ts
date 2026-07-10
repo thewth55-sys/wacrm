@@ -11,6 +11,7 @@ import type {
   SendListStepConfig,
   SendTemplateStepConfig,
   SendWebhookStepConfig,
+  SendConversionEventStepConfig,
   TagStepConfig,
   UpdateContactFieldStepConfig,
   WaitStepConfig,
@@ -21,6 +22,8 @@ import { supabaseAdmin } from './admin-client'
 import { engineSendText, engineSendTemplate, engineSendInteractive } from './meta-send'
 import { validateInteractivePayload } from '@/lib/whatsapp/interactive'
 import { isDeliverableUrl } from '@/lib/webhooks/ssrf'
+import { decrypt } from '@/lib/whatsapp/encryption'
+import { sendMetaConversionEvent } from '@/lib/conversions/meta-capi'
 
 // ------------------------------------------------------------
 // Public API
@@ -574,6 +577,41 @@ async function runStep(step: AutomationStep, args: ExecuteArgs): Promise<string>
       })
       if (!res.ok) throw new Error(`webhook returned ${res.status}`)
       return `webhook ${res.status}`
+    }
+
+    case 'send_conversion_event': {
+      const cfg = step.step_config as SendConversionEventStepConfig
+      if (!cfg.meta_event_name) throw new Error('send_conversion_event needs meta_event_name')
+      // Meta-only — Google Ads has no server-side path here (see the
+      // step config's doc comment in src/types/index.ts).
+      const { data: cfgRow } = await db
+        .from('conversion_tracking_config')
+        .select('meta_pixel_id, meta_access_token, meta_test_event_code, meta_track_automations')
+        .eq('account_id', args.automation.account_id)
+        .maybeSingle<{
+          meta_pixel_id: string | null
+          meta_access_token: string | null
+          meta_test_event_code: string | null
+          meta_track_automations: boolean
+        }>()
+      if (!cfgRow?.meta_track_automations || !cfgRow.meta_pixel_id || !cfgRow.meta_access_token) {
+        return 'conversion tracking not enabled for automations'
+      }
+      const { data: contact } = args.contactId
+        ? await db.from('contacts').select('phone, email').eq('id', args.contactId).maybeSingle<{
+            phone: string | null
+            email: string | null
+          }>()
+        : { data: null }
+      await sendMetaConversionEvent({
+        pixelId: cfgRow.meta_pixel_id,
+        accessToken: decrypt(cfgRow.meta_access_token),
+        eventName: cfg.meta_event_name,
+        testEventCode: cfgRow.meta_test_event_code ?? undefined,
+        userData: { phone: contact?.phone ?? undefined, email: contact?.email ?? undefined },
+        customData: cfg.value !== undefined ? { value: cfg.value, currency: cfg.currency } : undefined,
+      })
+      return `conversion event "${cfg.meta_event_name}" sent`
     }
 
     case 'close_conversation': {

@@ -24,6 +24,7 @@ import {
   resolveAuditUserId,
   ContactError,
 } from '@/lib/api/v1/contacts';
+import { dispatchConversionEvent } from '@/lib/conversions/dispatch';
 
 // PostgREST filter values are comma/paren-delimited; strip anything
 // that could break the `.or()` grammar before interpolating a search
@@ -123,6 +124,13 @@ export async function POST(request: Request) {
         company: typeof body.company === 'string' ? body.company : undefined,
       }
     );
+
+    if (created) {
+      await dispatchConversionEvent(ctx.supabase, ctx.accountId, 'lead_created', {
+        phone,
+        email: typeof body.email === 'string' ? body.email : undefined,
+      });
+    }
 
     if (Array.isArray(body.tags)) {
       await setContactTags(
