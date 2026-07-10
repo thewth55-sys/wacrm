@@ -36,9 +36,6 @@ docker-compose*.yml
 .editorconfig
 .prettierrc
 .prettierignore
-eslint.config.mjs
-tsconfig.json
-postcss.config.mjs
 components.json
 AGENTS.md
 CLAUDE.md
