@@ -45,7 +45,10 @@ const SECURITY_HEADERS = [
       // googletagmanager.com is gtag.js — lazy-loaded only when an
       // account configures Google Ads conversion tracking (see
       // src/lib/conversions/gtag.ts), never loaded unconditionally.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
+      // challenges.cloudflare.com is the Turnstile login CAPTCHA
+      // (src/components/auth/turnstile-widget.tsx) — only loads when
+      // NEXT_PUBLIC_TURNSTILE_SITE_KEY is configured.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://challenges.cloudflare.com",
       // Tailwind + inline style attributes on lots of components.
       "style-src 'self' 'unsafe-inline'",
       // Supabase public-bucket avatars, contact avatars (arbitrary
@@ -61,7 +64,10 @@ const SECURITY_HEADERS = [
       // googletagmanager.com / google.com / doubleclick.net are the
       // Google Ads gtag conversion beacon (client-side, opt-in per
       // account — see src/lib/conversions/gtag.ts).
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net https://challenges.cloudflare.com",
+      // Turnstile renders its interactive challenge inside an iframe
+      // from this origin when it can't pass invisibly.
+      "frame-src https://challenges.cloudflare.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

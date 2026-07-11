@@ -1,10 +1,10 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { createClient } from "@/lib/supabase/client";
+import { TurnstileWidget } from "@/components/auth/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,30 +42,39 @@ function LoginPageInner() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const captchaRequired = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+
+  const handleTurnstileExpire = useCallback(() => setTurnstileToken(null), []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    // Goes through our own route (not supabase.auth.signInWithPassword
+    // directly) so the Turnstile token gets verified server-side before
+    // Supabase is ever called — see src/app/api/auth/login/route.ts.
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, turnstileToken }),
     });
+    const data = await res.json().catch(() => ({}));
 
-    if (error) {
-      setError(error.message);
+    if (!res.ok) {
+      setError(data.error || "Login failed");
       setLoading(false);
       return;
     }
 
-    if (inviteToken) {
-      router.push(`/join/${encodeURIComponent(inviteToken)}`);
-    } else {
-      router.push("/dashboard");
-    }
+    // Hard navigation, not router.push — the session cookies were just
+    // set by the server route, and a full load guarantees the browser
+    // Supabase client (and every server component) reads them fresh
+    // instead of relying on stale in-memory client state.
+    window.location.href = inviteToken
+      ? `/join/${encodeURIComponent(inviteToken)}`
+      : "/dashboard";
   };
 
   return (
@@ -134,9 +143,11 @@ function LoginPageInner() {
               />
             </div>
 
+            <TurnstileWidget onVerify={setTurnstileToken} onExpire={handleTurnstileExpire} />
+
             <Button
               type="submit"
-              disabled={loading}
+              disabled={loading || (captchaRequired && !turnstileToken)}
               className="mt-2 h-10 w-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {loading ? t('signingIn') : t('signIn')}
