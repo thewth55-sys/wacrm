@@ -10,6 +10,7 @@ import {
   TemplatePicker,
   type TemplateSendValues,
 } from '@/components/inbox/template-picker';
+import { MedicalTab } from '@/components/contacts/medical-tab';
 import {
   Sheet,
   SheetContent,
@@ -477,6 +478,12 @@ export function ContactDetailView({
                   {t('tabs.notes')}
                 </TabsTrigger>
                 <TabsTrigger
+                  value="medical"
+                  className="data-active:bg-muted data-active:text-primary text-muted-foreground"
+                >
+                  {t('tabs.medical')}
+                </TabsTrigger>
+                <TabsTrigger
                   value="custom"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
                 >
@@ -645,6 +652,11 @@ export function ContactDetailView({
                     ))
                   )}
                 </div>
+              </TabsContent>
+
+              {/* Medical Tab */}
+              <TabsContent value="medical" className="flex-1 overflow-y-auto px-4 py-3">
+                {contactId && <MedicalTab contactId={contactId} />}
               </TabsContent>
 
               {/* Custom Fields Tab */}

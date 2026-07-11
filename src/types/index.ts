@@ -455,6 +455,56 @@ export interface Appointment {
   contact?: Contact;
 }
 
+// ------------------------------------------------------------
+// Clinical records (EHR) — see
+// supabase/migrations/038_clinical_records.sql. `clinical_notes` and
+// `clinical_note_addenda` are immutable once written (enforced by a
+// DB trigger, not just app logic) — there is no update/edit shape for
+// either type on purpose.
+// ------------------------------------------------------------
+
+export interface PatientProfile {
+  id: string;
+  account_id: string;
+  contact_id: string;
+  assigned_doctor_id: string | null;
+  blood_type?: string | null;
+  allergies?: string | null;
+  chronic_conditions?: string | null;
+  current_medications?: string | null;
+  emergency_contact_name?: string | null;
+  emergency_contact_phone?: string | null;
+  notes?: string | null;
+  created_by?: string | null;
+  created_at: string;
+  updated_at?: string;
+  assigned_doctor?: Doctor;
+}
+
+export interface ClinicalNoteAddendum {
+  id: string;
+  account_id: string;
+  clinical_note_id: string;
+  content: string;
+  created_by?: string | null;
+  created_at: string;
+}
+
+export interface ClinicalNote {
+  id: string;
+  account_id: string;
+  patient_profile_id: string;
+  doctor_id: string | null;
+  appointment_id: string | null;
+  chief_complaint: string;
+  findings_and_plan: string;
+  signed_at: string;
+  created_by?: string | null;
+  created_at: string;
+  doctor?: Doctor;
+  addenda?: ClinicalNoteAddendum[];
+}
+
 export type BroadcastStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'failed';
 export type RecipientStatus = 'pending' | 'sent' | 'delivered' | 'read' | 'replied' | 'failed';
 
