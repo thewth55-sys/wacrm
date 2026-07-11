@@ -217,6 +217,47 @@ html[data-theme="rose"] {
   --sidebar-ring: oklch(0.645 0.22 16);
 }
 
+/*
+ * FullCalendar theme bridge — maps FullCalendar's own CSS custom
+ * properties onto the app's theme tokens so the Agenda view follows
+ * dark/light mode and the active accent color automatically, instead
+ * of shipping a second hardcoded palette.
+ */
+.fc {
+  --fc-border-color: var(--border);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--muted);
+  --fc-list-event-hover-bg-color: var(--muted);
+  --fc-today-bg-color: var(--primary-soft);
+  --fc-button-bg-color: var(--card);
+  --fc-button-border-color: var(--border);
+  --fc-button-text-color: var(--foreground);
+  --fc-button-hover-bg-color: var(--muted);
+  --fc-button-hover-border-color: var(--border);
+  --fc-button-active-bg-color: var(--primary);
+  --fc-button-active-border-color: var(--primary);
+  --fc-event-border-color: transparent;
+  --fc-now-indicator-color: var(--primary);
+  font-family: inherit;
+}
+.fc .fc-toolbar-title {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number,
+.fc .fc-timegrid-slot-label-cushion {
+  color: var(--muted-foreground);
+}
+.fc .fc-button {
+  text-transform: capitalize;
+  box-shadow: none !important;
+}
+.fc .fc-button:disabled {
+  opacity: 0.5;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

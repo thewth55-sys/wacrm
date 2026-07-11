@@ -12,12 +12,12 @@ import {
 } from '@/components/inbox/template-picker';
 import { MedicalTab } from '@/components/contacts/medical-tab';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -385,19 +385,18 @@ export function ContactDetailView({
 
   return (
     <>
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="bg-popover border-border text-popover-foreground sm:max-w-lg w-full p-0"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="bg-popover border-border text-popover-foreground w-full max-w-2xl max-h-[85vh] p-0 flex flex-col"
       >
         {loading || !contact ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full py-16">
             <Loader2 className="size-6 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col min-h-0 flex-1">
             {/* Header */}
-            <SheetHeader className="p-4 border-b border-border/50">
+            <DialogHeader className="p-4 border-b border-border/50">
               <div className="flex items-center gap-3">
                 <Avatar className="size-12 bg-muted border border-border">
                   <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
@@ -405,12 +404,12 @@ export function ContactDetailView({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <SheetTitle className="text-popover-foreground truncate">
+                  <DialogTitle className="text-popover-foreground truncate">
                     {contact.name || t('unnamed')}
-                  </SheetTitle>
-                  <SheetDescription className="text-muted-foreground text-xs mt-0.5">
+                  </DialogTitle>
+                  <DialogDescription className="text-muted-foreground text-xs mt-0.5">
                     {t('contactDetailsDesc')}
-                  </SheetDescription>
+                  </DialogDescription>
                   <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                     <button
                       onClick={copyPhone}
@@ -454,10 +453,10 @@ export function ContactDetailView({
                   {t('sendTemplateBtn')}
                 </Button>
               </div>
-            </SheetHeader>
+            </DialogHeader>
 
             {/* Tabs */}
-            <Tabs defaultValue="details" className="flex-1 flex flex-col min-h-0">
+            <Tabs defaultValue="details" className="flex-1 flex flex-col min-h-0 overflow-hidden">
               <TabsList className="bg-muted/50 border-b border-border mx-4 mt-3">
                 <TabsTrigger
                   value="details"
@@ -469,7 +468,7 @@ export function ContactDetailView({
                   value="tags"
                   className="data-active:bg-muted data-active:text-primary text-muted-foreground"
                 >
-                  {t('tabs.tags', { fallback: 'Tags' })}
+                  {t('tabs.tags')}
                 </TabsTrigger>
                 <TabsTrigger
                   value="notes"
@@ -500,44 +499,46 @@ export function ContactDetailView({
               {/* Details Tab */}
               <TabsContent value="details" className="flex-1 overflow-y-auto px-4 py-3">
                 <div className="space-y-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-muted-foreground text-xs">{t('company', { fallback: 'Name' })}</Label>
-                    <Input
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="bg-muted border-border text-foreground h-8 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-muted-foreground text-xs">
-                      {t('phone')} <span className="text-red-400">*</span>
-                    </Label>
-                    <Input
-                      value={editPhone}
-                      onChange={(e) => setEditPhone(e.target.value)}
-                      className="bg-muted border-border text-foreground h-8 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-muted-foreground text-xs">{t('email')}</Label>
-                    <Input
-                      value={editEmail}
-                      onChange={(e) => setEditEmail(e.target.value)}
-                      className="bg-muted border-border text-foreground h-8 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-muted-foreground text-xs">{t('company')}</Label>
-                    <Input
-                      value={editCompany}
-                      onChange={(e) => setEditCompany(e.target.value)}
-                      className="bg-muted border-border text-foreground h-8 text-sm"
-                    />
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-muted-foreground text-xs">{t('name')}</Label>
+                      <Input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="bg-muted border-border text-foreground h-8 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-muted-foreground text-xs">
+                        {t('phone')} <span className="text-red-400">*</span>
+                      </Label>
+                      <Input
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        className="bg-muted border-border text-foreground h-8 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-muted-foreground text-xs">{t('email')}</Label>
+                      <Input
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        className="bg-muted border-border text-foreground h-8 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-muted-foreground text-xs">{t('company')}</Label>
+                      <Input
+                        value={editCompany}
+                        onChange={(e) => setEditCompany(e.target.value)}
+                        className="bg-muted border-border text-foreground h-8 text-sm"
+                      />
+                    </div>
                   </div>
                   <Button
                     onClick={saveDetails}
                     disabled={savingDetails}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
                     size="sm"
                   >
                     {savingDetails ? (
@@ -765,8 +766,8 @@ export function ContactDetailView({
             </Tabs>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
     <TemplatePicker
       open={templatePickerOpen}
       onOpenChange={setTemplatePickerOpen}

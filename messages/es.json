@@ -21,6 +21,7 @@
     "notifications": "Notificaciones",
     "contacts": "Contactos",
     "pipelines": "Pipelines",
+    "agenda": "Agenda",
     "broadcasts": "Difusiones",
     "automations": "Automatizaciones",
     "flows": "Flujos",
@@ -37,6 +38,7 @@
     "defaultUser": "Usuario",
     "defaultAvatar": "Avatar",
     "menuProfile": "Perfil",
+    "menuMyAvailability": "Mi disponibilidad",
     "menuSettings": "Ajustes",
     "menuSignOut": "Cerrar sesión"
   },
@@ -360,11 +362,12 @@
         "activity": "Actividad",
         "notes": "Notas",
         "medical": "Médico",
+        "tags": "Etiquetas",
         "custom": "Campos personalizados",
         "deals": "Negocios",
-      "noTags": "Sin etiquetas",
-      "noDeals": "Sin negocios",
-      "addNotePlaceholder": "Agregar una nota..."
+        "noTags": "Sin etiquetas",
+        "noDeals": "Sin negocios",
+        "addNotePlaceholder": "Agregar una nota..."
       },
       "actions": {
         "edit": "Editar",
@@ -374,6 +377,7 @@
       "contactInfo": "Información de contacto",
       "unnamed": "Desconocido",
       "contactDetailsDesc": "Detalles del contacto",
+      "name": "Nombre",
       "phone": "Teléfono",
       "email": "Correo",
       "company": "Empresa",
@@ -641,6 +645,8 @@
         "cancelled": "Cancelada",
         "no_show": "No se presentó"
       },
+      "statusLabel": "Estado",
+      "notes": "Notas",
       "noServiceType": "Sin tratamiento",
       "noDoctor": "Sin doctor asignado",
       "noRoom": "Sin consultorio asignado",
@@ -662,6 +668,43 @@
       "updated": "Cita actualizada",
       "cancelled": "Cita cancelada",
       "saveFailed": "Error al guardar la cita"
+    }
+  },
+  "Agenda": {
+    "title": "Agenda",
+    "subtitle": "Arrastra una cita para reagendarla. Las bandas sombreadas muestran cuándo está disponible cada doctor.",
+    "allDoctors": "Todos los doctores",
+    "allRooms": "Todos los consultorios",
+    "readOnly": "Tienes acceso de solo lectura — pide a un admin o agente que reagende las citas.",
+    "newAppointment": "Nueva cita",
+    "editAppointment": "Editar cita",
+    "contact": "Paciente",
+    "searchContactPlaceholder": "Buscar por nombre o teléfono…",
+    "noContactSelected": "Sin paciente vinculado",
+    "changeContact": "Cambiar",
+    "delete": "Eliminar cita",
+    "deleteConfirm": "¿Eliminar esta cita? No se puede deshacer.",
+    "deleted": "Cita eliminada",
+    "deleteFailed": "No se pudo eliminar la cita",
+    "rescheduleFailed": "No se pudo reagendar — se revirtió el cambio",
+    "loadFailed": "No se pudo cargar la agenda",
+    "mine": {
+      "title": "Mi disponibilidad",
+      "subtitle": "Declara las fechas y horarios en que estarás en esta clínica. El personal usa esto para agendarte pacientes.",
+      "notDoctorTitle": "Sin perfil de doctor vinculado",
+      "notDoctorBody": "Tu cuenta aún no está vinculada a un perfil de doctor. Pide a un admin que lo vincule desde Ajustes → Agendamiento.",
+      "addBlock": "Agregar bloque de disponibilidad",
+      "startTime": "Inicio",
+      "endTime": "Fin",
+      "notesPlaceholder": "Notas (opcional)",
+      "save": "Guardar",
+      "empty": "Aún no has declarado disponibilidad.",
+      "delete": "Quitar",
+      "deleteConfirm": "¿Quitar este bloque de disponibilidad?",
+      "created": "Disponibilidad agregada",
+      "deleted": "Disponibilidad eliminada",
+      "saveFailed": "No se pudo guardar la disponibilidad",
+      "endBeforeStart": "La hora de fin debe ser posterior a la de inicio"
     }
   },
   "Broadcasts": {
@@ -1414,13 +1457,11 @@
       "deleteLocallyAria": "Eliminar plantilla localmente",
       "deleteMetaLocallyTitle": "Eliminar de Meta y localmente",
       "deleteLocallyTitle": "Eliminar localmente",
-
       "dialogEditTitle": "Editar plantilla de mensaje",
       "dialogNewTitle": "Nueva plantilla de mensaje",
       "dialogEditDesc": "Guarda tus cambios para volver a enviar a Meta. El estado volverá a PENDIENTE durante la revisión.",
       "dialogNewDesc": "Crea una plantilla y envíala a Meta para aprobación. Una vez aprobada, podrás usarla en difusiones y en la bandeja de entrada.",
       "authWarning": "Las plantillas de AUTENTICACIÓN tienen un cuerpo fijo + forma de botón OTP que necesita un creador distinto. Créalas en Meta WhatsApp Manager por ahora y usa <bold>Sincronizar desde Meta</bold> para traerlas.",
-
       "templateName": "Nombre de la plantilla",
       "namePlaceholder": "ej. confirmacion_pedido",
       "nameFixed": "El nombre queda fijo una vez que la plantilla existe en Meta — crea una nueva plantilla para cambiarlo.",
@@ -1429,7 +1470,6 @@
       "language": "Idioma",
       "langFixed": "El idioma queda fijo una vez que la plantilla existe en Meta.",
       "langHint": "Debe coincidir exactamente con el código en Meta — <code>en_US</code> y <code>en</code> son distintos.",
-
       "header": "Encabezado",
       "headerNone": "Ninguno",
       "headerText": "Texto",
@@ -1439,7 +1479,6 @@
       "headerTextPlaceholder": "Texto del encabezado (máx. 60 caracteres, {{1}} opcional)",
       "headerSampleAria": "Valor de ejemplo para la variable del encabezado",
       "headerSamplePlaceholder": "Valor de ejemplo para {{1}} (requerido para la revisión de Meta)",
-
       "uploadImage": "Subir imagen",
       "uploadHint": "JPEG o PNG, ≤5 MB",
       "mediaUrlPlaceholder": "https://… (o pega un enlace público {format})",
@@ -1447,17 +1486,14 @@
       "mediaHint": "Debe ser un enlace HTTPS de acceso público. Meta lo consulta una vez durante la revisión, así que debe seguir activo por ~24 horas.",
       "videoHint": " Recomendado: MP4 / 3GPP, ≤16 MB, ≤60 segundos.",
       "documentHint": " Recomendado: PDF, ≤100 MB.",
-
       "bodyText": "Texto del cuerpo",
       "bodyPlaceholder": "Hola {{1}}, tu pedido {{2}} está confirmado.",
       "bodyHint": "Usa {{1}}, {{2}} para variables (deben ser contiguas empezando en {{1}}).",
       "sampleValues": "Valores de ejemplo (Meta los usa para revisar tu plantilla)",
       "sampleAria": "Valor de ejemplo para la variable del cuerpo {var}",
       "samplePlaceholder": "Ejemplo para {var}",
-
       "footer": "Pie de página (opcional)",
       "footerPlaceholder": "Texto de pie de página opcional (máx. 60 caracteres)",
-
       "buttons": "Botones (opcional)",
       "addButton": "Agregar botón",
       "buttonsLimit": "Hasta {max} botones. Los botones de RESPUESTA RÁPIDA deben ir antes que los de URL / teléfono / código de copia.",
@@ -1470,19 +1506,16 @@
       "urlSamplePlaceholder": "Valor de ejemplo para {{1}} (requerido cuando la URL tiene variable)",
       "phonePlaceholder": "+15551234567",
       "codePlaceholder": "Código de ejemplo (ej. VERANO20)",
-
       "cancel": "Cancelar",
       "saving": "Guardando…",
       "submitting": "Enviando…",
       "saveResubmit": "Guardar y reenviar",
       "submitApproval": "Enviar para aprobación",
-
       "deleteDialogTitle": "¿Eliminar plantilla?",
       "deleteMetaDesc": "\"{name}\" se eliminará de Meta y de wacrm. Las difusiones activas que usan esta plantilla empezarán a fallar en su próximo envío. Esto no se puede deshacer.",
       "deleteLocalDesc": "\"{name}\" se eliminará de wacrm. Nunca se envió a Meta, así que no requiere limpieza remota.",
       "deleting": "Eliminando…",
       "delete": "Eliminar",
-
       "toastLoadFailed": "Error al cargar las plantillas",
       "toastSubmitFailed": "Error al enviar",
       "toastSubmitEditSuccess": "Edición enviada — Meta normalmente revisa en 24 horas.",
@@ -1623,7 +1656,6 @@
       "profileSaved": "Perfil guardado",
       "emailChangeFailed": "Error al cambiar el correo: {message}",
       "profileSavedEmailCheck": "Perfil guardado — revisa tu correo para confirmar el cambio de dirección",
-
       "passwordTitle": "Contraseña",
       "passwordDesc": "Usa al menos {min} caracteres. Permanecerás con la sesión iniciada en este dispositivo después de cambiarla.",
       "currentPassword": "Contraseña actual",
@@ -1637,7 +1669,6 @@
       "currentPasswordIncorrect": "La contraseña actual es incorrecta",
       "passwordUpdateFailed": "Error al actualizar la contraseña: {message}",
       "passwordUpdated": "Contraseña actualizada",
-
       "sessionsTitle": "Sesiones activas",
       "sessionsDesc": "Cierra sesión en todos los dispositivos donde hayas iniciado sesión — incluido este. Útil si perdiste una laptop o compartiste tu contraseña.",
       "signOutAll": "Cerrar sesión en todos los dispositivos",
